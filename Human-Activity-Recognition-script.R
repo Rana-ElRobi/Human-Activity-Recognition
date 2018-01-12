@@ -7,7 +7,9 @@ dim(test.data) # 20 160
 
 # load libraries
 library(caret)
-
+#===========================================
+# PreProcessing steps
+# --------------------
 # partition data
 parts.train <- createDataPartition(train.data$classe, p=0.70, list=FALSE)
 train.part <- train.data[parts.train,] 
@@ -37,5 +39,25 @@ dim(test.part) # 13737   59
 # remove 1st 5 columns as all not importatnt features 
 train.part <- train.part[,-(1:5)] # 13737    54
 test.part <- test.part[,-(1:5)] # 13737    54
+
+#===========================================
+# Lets do some Analysis
+#-----------------------
+library(corrplot)
+
+# lets check the corelation matrix
+corMatrix <- cor(train.part[, -54])
+corr.fig <- corrplot(corMatrix, order = "FPC", method = "color", type = "lower", 
+         tl.cex = 0.8, tl.col = rgb(0, 0, 0))
+# darker colores means high correlation between variables
+
+#===========================================
+# Lets start building models
+#---------------------------
+# Three methods will be applied to model the regressions (in the Train dataset) 
+# and the best one (with higher accuracy when applied to the Test dataset)
+
+
+
 
 
