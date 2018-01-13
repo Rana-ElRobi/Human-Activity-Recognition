@@ -138,7 +138,7 @@ dev.off()
 #----------------------
 # Random Forest : 0.9968
 # Decision Tree : 0.7412
-# Genl Boosting : 0.9839
+# Genl Boosting : 0.9867
 
 # Then Random forest WIN ;)
 # lets use it on real testing data
