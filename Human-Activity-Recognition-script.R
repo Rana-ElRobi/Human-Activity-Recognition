@@ -83,12 +83,68 @@ plot(conf.RF$table, col = conf.RF$byClass
      , main = paste("Random Forest (Accuracy) =", round(conf.RF$overall['Accuracy'], 4)))
 dev.off()
 
-## M1 : Decision Trees
+## M2 : Decision Trees
 #----------------------
+library(rpart)
+library(rpart.plot)
+library(rattle)
+library(knitr)
 
+# model fit
+set.seed(12345)
+modFit.DT <- rpart(classe ~ ., data=train.part, method="class")
+# plot the classification tree
+#rattle::fancyRpartPlot(modFit.DT$finalModel)
+fancyRpartPlot(modFit.DT)
 
+# prediction on Test dataset
+predict.DT <- predict(modFit.DT, newdata=test.part, type="class")
+conf.DT <- confusionMatrix(predict.DT, test.part$classe)
+conf.DT
 
+# save figure
+png('conf-DT.png')
+# plot matrix results
+plot(conf.DT$table, col = conf.DT$byClass, 
+     main = paste("Decision Tree (Accuracy) =",
+                  round(conf.DT$overall['Accuracy'], 4)))
+dev.off()
 
+## M3 : Generalized Boosted Model
+#---------------------------------
+library(gbm)
+library(plyr)
+# model fit
+set.seed(12345)
+control.boost <- trainControl(method = "repeatedcv", number = 5, repeats = 1)
+modFit.boost  <- train(classe ~ ., data=train.part, method = "gbm",
+                    trControl = control.boost, verbose = FALSE)
+modFit.boost$finalModel
 
+# prediction on Test dataset
+predict.boost <- predict(modFit.boost, newdata=test.part)
+conf.boost <- confusionMatrix(predict.boost, test.part$classe)
+conf.boost
 
+# save figure
+png('conf-Boost.png')
+# plot matrix results
+plot(conf.boost$table, col = conf.boost$byClass, 
+     main = paste("Boosting (Accuracy) =", round(conf.boost$overall['Accuracy'], 4)))
+dev.off()
 
+# ===========================================
+# RF vs DT vs Boosting
+#----------------------
+# Random Forest : 0.9968
+# Decision Tree : 0.7412
+# Genl Boosting : 0.9839
+
+# Then Random forest WIN ;)
+# lets use it on real testing data
+predict.real.test <- predict(modFitRandForest, newdata=test.data)
+predict.real.test
+
+# Final output
+# [1] B A B A A E D B A A B C B A E E A B B B
+# Levels: A B C D E
