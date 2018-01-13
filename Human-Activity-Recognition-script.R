@@ -61,6 +61,33 @@ dev.off()
 # Three methods will be applied to model the regressions (in the Train dataset) 
 # and the best one (with higher accuracy when applied to the Test dataset)
 
+## M1 : Random forest
+#--------------------
+library(randomForest)
+# model fit
+set.seed(12345)
+controlRF <- trainControl(method="cv", number=3, verboseIter=FALSE)
+modFitRandForest <- train(classe ~ ., data=train.part, method="rf",
+                          trControl=controlRF)
+modFitRandForest$finalModel
+
+#Lets do prediction on Test dataset
+predict.RF <- predict(modFitRandForest, newdata=test.part)
+conf.RF <- confusionMatrix(predict.RF, test.part$classe)
+conf.RF
+
+# save figure
+png('conf-RF.png')
+# plot matrix results
+plot(conf.RF$table, col = conf.RF$byClass
+     , main = paste("Random Forest (Accuracy) =", round(conf.RF$overall['Accuracy'], 4)))
+dev.off()
+
+## M1 : Decision Trees
+#----------------------
+
+
+
 
 
 
