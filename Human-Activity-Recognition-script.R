@@ -47,9 +47,13 @@ library(corrplot)
 
 # lets check the corelation matrix
 corMatrix <- cor(train.part[, -54])
+
+# save figure
+png('corr-plot.png')
 corr.fig <- corrplot(corMatrix, order = "FPC", method = "color", type = "lower", 
          tl.cex = 0.8, tl.col = rgb(0, 0, 0))
 # darker colores means high correlation between variables
+dev.off()
 
 #===========================================
 # Lets start building models
